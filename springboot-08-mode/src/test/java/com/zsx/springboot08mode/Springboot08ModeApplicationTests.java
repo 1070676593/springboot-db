@@ -1,15 +1,13 @@
-package com.example;
+package com.zsx.springboot08mode;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class Springboot06DevProApplicationTests {
+class Springboot08ModeApplicationTests {
 
     @Test
     void contextLoads() {
     }
-
-
 
 }

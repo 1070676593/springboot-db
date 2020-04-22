@@ -31,4 +31,5 @@ public class TbUser {
                 ", updated=" + updated +
                 '}';
     }
+
 }
