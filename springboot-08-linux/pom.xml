@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.zsx</groupId>
-    <artifactId>springboot-08-mode</artifactId>
+    <artifactId>springboot-08-linux</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>springboot-08-mode</name>
+    <name>springboot-08-linux</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
