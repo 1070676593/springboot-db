@@ -1,0 +1,95 @@
+#!/bin/sh
+
+pro_path=/usr/local/bootapps/
+CUR_DATE=`date +%Y%m%d%H%M%S`
+JAR_NAME=jars/$2.jar
+mkdir $2
+echo "application =$JAR_NAME "
+logDir=/usr/local/bootapps/$2
+CATLINA_PATH=$logDir/catlina
+PID=$logDir/$2.pid
+echo "pid  =$PID"
+P_GC_LOG=$logDir/logs/gc/gc.log
+echo "gc log  dir   =$P_GC_LOG"
+P_HEAP_DUMP=$logDir/logs/gc
+
+JAVA_OPTS="-server -Xmx2G -Xms2G -Xmn256m -XX:+UseG1GC  -XX:MetaspaceSize=256m -XX:MaxMetaspaceSize=256m -XX:+DisableExplicitGC  -verbose:gc -Xloggc:$P_GC_LOG -XX:+PrintGC -XX:+PrintTenuringDistribution -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps -XX:+PrintHeapAtGC -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=7 -XX:GCLogFileSize=1M -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=$P_HEAP_DUMP"
+
+#help
+help(){
+     echo " sh openapi.sh   [start|stop|restart|status] jar_name "
+    echo "eg: sh openapi.sh start  shop"
+    exit 1
+
+}
+
+is_exist(){
+  pid=`ps -ef|grep $JAR_NAME|grep -v grep|awk '{print $2}' `
+  if [ -z "${pid}" ]; then
+   return 1
+  else
+    return 0
+  fi
+}
+
+
+start(){
+  is_exist
+  if [ $? -eq "0" ]; then
+    echo ">>> ${JAR_NAME} is already running PID=${pid} <<<" 
+  else
+    nohup  java $JAVA_OPTS -jar -Dloader.path=/usr/local/bootapps/jars/$2 $pro_path$JAR_NAME --spring.profiles.active=pro  >> $CATLINA_PATH 2>&1 &
+    echo $! > $PID
+        echo  "$JAR_NAME is started pid[$!] "
+   fi
+  }
+
+
+stop(){
+  is_exist
+  if [ $? -eq "0" ]; then
+    echo ">>> api 2 PID = $pid begin kill -9 $pid  <<<"
+    kill -9  $pid
+        echo "" > $PID
+    sleep 2
+    echo ">>> $JAR_NAME process stopped <<<"  
+  else
+    echo ">>> ${JAR_NAME} is not running <<<"
+  fi
+}
+
+
+status(){
+  is_exist
+  if [ $? -eq "0" ]; then
+    echo ">>> ${JAR_NAME} is running PID is ${pid} <<<"
+  else
+    echo ">>> ${JAR_NAME} is not running <<<"
+  fi
+}
+
+
+restart(){
+  stop
+  start
+}
+
+
+case "$1" in
+  "start")
+    start
+    ;;
+  "stop")
+    stop
+    ;;
+  "status")
+    status
+    ;;
+  "restart")
+    restart
+    ;;
+  *)
+    help
+    ;;
+esac
+exit 0

@@ -39,10 +39,42 @@
     </dependencies>
 
     <build>
+        <finalName>mode</finalName>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <!--<outputDirectory>target/lib</outputDirectory>-->
+<!--                            <excludeGroupIds>cn.189.sh.emall,com.dzqd.openapi</excludeGroupIds>-->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <layout>ZIP</layout>
+                    <executable>true</executable>
+                    <includes>
+                        <include>
+                            <groupId>nothing</groupId>
+                            <artifactId>nothing</artifactId>
+                        </include>
+<!--                        <include>-->
+<!--                            <groupId>cn.189.sh.emall</groupId>-->
+<!--                            <artifactId>emall-common</artifactId>-->
+<!--                        </include>-->
+                    </includes>
+                </configuration>
             </plugin>
         </plugins>
     </build>
